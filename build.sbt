@@ -18,15 +18,17 @@ lazy val scalaCompilerOptions = Seq(
   "-Xfuture"
 )
 
+lazy val depsOverride = Bom.dependencies("com.fasterxml.jackson" % "jackson-bom" % "2.16.0")
 lazy val deps = Bom.read("com.fasterxml.jackson" % "jackson-bom" % "2.16.0")(bom => JacksonDependencies(bom))
 
 lazy val `sbt-bom-example-github` = project
   .in(file("."))
+  .settings(depsOverride)
   .settings(deps)
   .settings(
-    name := "sbt-bom-example-github",
-    resolvers := Resolver.DefaultMavenRepository +: resolvers.value,
-    libraryDependencies ++= deps.key.value.dependencies
+    libraryDependencies += "com.typesafe.play" %% "play" % "2.8.21",
+    libraryDependencies ++= deps.key.value.dependencies,
+    dependencyOverrides ++= depsOverride.key.value
   )
 
 ThisBuild / scalacOptions ++= scalaCompilerOptions
